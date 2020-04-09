@@ -149,6 +149,7 @@ function (angular, _, dateMath, moment) {
     this._doQuery = function (from, to, granularity, target) {
       var datasource = target.druidDS;
       var filters = target.filters;
+      var rawQuery = target.rawQuery;
       var aggregators = target.aggregators;
       var postAggregators = target.postAggregators;
       var groupBy = _.map(target.groupBy, (e) => { return templateSrv.replace(e) });
@@ -164,7 +165,9 @@ function (angular, _, dateMath, moment) {
         selectThreshold = 5;
       }
 
-      if (target.queryType === 'topN') {
+      if (rawQuery) {
+        promise = this._rawQuery(rawQuery)
+      } else if (target.queryType === 'topN') {
         var threshold = target.limit;
         var metric = target.druidMetric;
         var dimension = templateSrv.replace(target.dimension);
@@ -295,6 +298,10 @@ function (angular, _, dateMath, moment) {
 
       return this._druidQuery(query);
     };
+
+    this._rawQuery = function (query) {
+      return this._druidQuery(query);
+    }
 
     this._druidQuery = function (query) {
       var options = {

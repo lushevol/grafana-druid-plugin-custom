@@ -10,6 +10,7 @@ export class DruidQueryCtrl extends QueryCtrl {
   addFilterMode: boolean;
   addAggregatorMode: boolean;
   addPostAggregatorMode: boolean;
+  addRawQueryMode: boolean;
   addDimensionsMode: boolean;
   addMetricsMode: boolean;
   listDataSources: any;
@@ -51,6 +52,7 @@ export class DruidQueryCtrl extends QueryCtrl {
     };
 
     arithmeticPostAggregatorFns = {'+': null, '-': null, '*': null, '/': null};
+    defaultRawQuery = "";
     defaultQueryType = "timeseries";
     defaultFilterType = "selector";
     defaultAggregatorType = "count";
@@ -322,6 +324,38 @@ export class DruidQueryCtrl extends QueryCtrl {
     clearCurrentPostAggregator() {
       this.target.currentPostAggregator = _.clone(this.defaultPostAggregator);;
       this.addPostAggregatorMode = false;
+      this.targetBlur();
+    }
+
+    addRawQuery() {
+      if (!this.addRawQueryMode) {
+        this.addRawQueryMode = true;
+        return;
+      }
+
+      if (!this.target.rawQuery) {
+        this.target.rawQuery = '';
+      }
+
+      this.target.errors = this.validateTarget();
+      if (!this.target.errors.currentRawQuery) {
+        //Add new post aggregator to the list
+        this.target.rawQuery = this.target.currentRawQuery;
+        this.clearCurrentRawQuery();
+        this.addRawQueryMode = false;
+      }
+
+      this.targetBlur();
+    }
+
+    removeRawQuery(index) {
+      this.target.rawQuery = '';
+      this.targetBlur();
+    }
+
+    clearCurrentRawQuery() {
+      this.target.currentRawQuery = '';
+      this.addRawQueryMode = false;
       this.targetBlur();
     }
 

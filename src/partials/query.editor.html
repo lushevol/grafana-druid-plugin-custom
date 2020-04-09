@@ -451,4 +451,31 @@
     <div class="gf-form-label gf-form-label--grow"></div>
   </div>
 </div>
+<!-- raw query -->
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-9">
+        Raw Query
+      </label>
+    </div>
+
+    <div class="gf-form" ng-hide="ctrl.addRawQueryMode">
+      <label class="gf-form-label query-keyword">
+        <a ng-click="ctrl.addRawQuery()"><i class="fa fa-plus"></i></a>
+      </label>
+    </div>
+    <div class="gf-form-select-wrapper width-8" ng-show="ctrl.addRawQueryMode">
+      <input type="text" class="input-large gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
+    </div>
+
+    <div class="gf-form" ng-show="ctrl.addRawQueryMode">
+      <label class="gf-form-label">
+        <a ng-click="ctrl.addRawQuery()">add tag</a>
+        <a ng-click="ctrl.clearCurrentRawQuery()"><i class="fa fa-remove"></i></a>
+      </label>
+    </div>
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form-label gf-form-label--grow"></div>
+    </div>
+  </div>
 </query-editor-row>
