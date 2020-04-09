@@ -18,6 +18,7 @@ export class DruidQueryCtrl extends QueryCtrl {
   getMetrics: any;
   getDimensions: any;
   getFilterValues: any;
+  getRawQuery: any;
   queryTypes: any;
   filterTypes: any;
   aggregatorTypes: any;
@@ -128,6 +129,12 @@ export class DruidQueryCtrl extends QueryCtrl {
     this.getDimensionsAndMetrics = (query, callback) => {
       console.log("getDimensionsAndMetrics.query: " + query);
       this.datasource.getDimensionsAndMetrics(this.target.druidDS)
+        .then(callback);
+    };
+
+    this.getRawQuery = (query, callback) => {
+      const rawQuery = this.target.currentRawQuery;
+      this.datasource.getRawQuery(rawQuery, query)
         .then(callback);
     };
 

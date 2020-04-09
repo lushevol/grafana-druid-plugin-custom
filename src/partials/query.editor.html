@@ -243,7 +243,7 @@
     </div>
     <div class="gf-form" ng-show="ctrl.addFilterMode" ng-switch on="ctrl.target.currentFilter.type">
       <input type="text" ng-switch-when="javascript" class="input-small gf-form-input width-10" spellcheck='false' ng-model="ctrl.target.currentFilter.dimension" placeholder="dimension" bs-typeahead="ctrl.getDimensions" data-min-length=0 ng-blur="ctrl.targetBlur()">
-      <input type="text" ng-switch-when="javascript" class="input-small gf-form-input width-10" spellcheck='false' ng-model="ctrl.target.currentFilter.function" placeholder="func" ng-blur="ctrl.targetBlur()" placeholder="value">
+      <input type="text" ng-switch-when="javascript" class="input-small gf-form-input width-10" spellcheck='false' ng-model="ctrl.target.currentFilter.function" placeholder="func" ng-blur="ctrl.targetBlur()">
     </div>
     <gf-form-switch ng-show="ctrl.addFilterMode" ng-switch on="ctrl.target.currentFilter.type" class="gf-form" label="Negate" label-class="query-keyword" checked="ctrl.target.currentFilter.negate">
     </gf-form-switch>
@@ -464,13 +464,12 @@
         <a ng-click="ctrl.addRawQuery()"><i class="fa fa-plus"></i></a>
       </label>
     </div>
-    <div class="gf-form-select-wrapper width-8" ng-show="ctrl.addRawQueryMode">
-      <input type="text" class="input-large gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
+    <div class="gf-form" ng-show="ctrl.addRawQueryMode">
+      <input type="text" class="input-medium gf-form-input width-24" spellcheck="false" ng-model="ctrl.target.currentRawQuery" bs-typeahead="ctrl.getRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
     </div>
 
     <div class="gf-form" ng-show="ctrl.addRawQueryMode">
       <label class="gf-form-label">
-        <a ng-click="ctrl.addRawQuery()">add tag</a>
         <a ng-click="ctrl.clearCurrentRawQuery()"><i class="fa fa-remove"></i></a>
       </label>
     </div>

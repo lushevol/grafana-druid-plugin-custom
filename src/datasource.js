@@ -73,6 +73,11 @@ function (angular, _, dateMath, moment) {
       });
     };
 
+    this.getRawQuery = function (rawQuery, query) {
+      const jsonRawQuery = JSON.parse(rawQuery);
+      return this._druidQuery(jsonRawQuery);
+    }
+
     this.getFilterValues = function (target, panelRange, query) {
         var topNquery = {
             "queryType": "topN",
