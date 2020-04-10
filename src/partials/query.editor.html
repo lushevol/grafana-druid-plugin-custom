@@ -465,16 +465,13 @@
       </label>
     </div>
     <div class="gf-form" ng-show="ctrl.addRawQueryMode">
-      <input type="text" class="input-medium gf-form-input width-24" spellcheck="false" ng-model="ctrl.target.currentRawQuery" bs-typeahead="ctrl.getRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
+      <textarea rows="4" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" bs-typeahead="ctrl.getRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
     </div>
 
     <div class="gf-form" ng-show="ctrl.addRawQueryMode">
       <label class="gf-form-label">
         <a ng-click="ctrl.clearCurrentRawQuery()"><i class="fa fa-remove"></i></a>
       </label>
-    </div>
-    <div class="gf-form gf-form--grow">
-      <div class="gf-form-label gf-form-label--grow"></div>
     </div>
   </div>
 </query-editor-row>
