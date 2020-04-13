@@ -465,7 +465,7 @@
       </label>
     </div>
     <div class="gf-form gf-form--grow" ng-show="ctrl.addRawQueryMode">
-      <textarea rows="4" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" bs-typeahead="ctrl.getRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
+      <textarea rows="4" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" ng-change="ctrl.getRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
     </div>
 
     <div class="gf-form" ng-show="ctrl.addRawQueryMode">
