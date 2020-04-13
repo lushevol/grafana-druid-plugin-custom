@@ -19,6 +19,8 @@ export class DruidQueryCtrl extends QueryCtrl {
   getDimensions: any;
   getFilterValues: any;
   getRawQuery: any;
+  setRawAggregators: any;
+  setRawPostAggregator: any;
   queryTypes: any;
   filterTypes: any;
   aggregatorTypes: any;
@@ -98,6 +100,10 @@ export class DruidQueryCtrl extends QueryCtrl {
         this.clearCurrentPostAggregator();
       }
 
+      if (!this.target.currentRawPostAggregator) {
+        this.clearCurrentRawPostAggregator();
+      }
+
       if (!this.target.customGranularity) {
         this.target.customGranularity = this.defaultCustomGranularity;
       }
@@ -134,7 +140,19 @@ export class DruidQueryCtrl extends QueryCtrl {
 
     this.getRawQuery = (query, callback) => {
       const rawQuery = this.target.currentRawQuery;
-      this.datasource.getRawQuery(rawQuery, query)
+      this.datasource.getRawQuery(rawQuery, this.panelCtrl.range, query)
+        .then(callback);
+    };
+
+    this.setRawAggregators = (query, callback) => {
+      var rawAggregators = this.target.currentRawAggregator;
+      this.datasource.setRawAggregators(rawAggregators, query)
+        .then(callback);
+    };
+    
+    this.setRawPostAggregator = (query, callback) => {
+      var rawPostAggregators = this.target.currentRawPostAggregator;
+      this.datasource.setRawPostAggregator(rawPostAggregators, query)
         .then(callback);
     };
 
@@ -331,6 +349,10 @@ export class DruidQueryCtrl extends QueryCtrl {
     clearCurrentPostAggregator() {
       this.target.currentPostAggregator = _.clone(this.defaultPostAggregator);;
       this.addPostAggregatorMode = false;
+      this.targetBlur();
+    }
+
+    clearCurrentRawPostAggregator() {
       this.targetBlur();
     }
 

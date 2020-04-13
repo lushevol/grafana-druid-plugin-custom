@@ -32,6 +32,9 @@ function (angular, _, dateMath, moment) {
     this.supportMetrics = true;
     this.periodGranularity = instanceSettings.jsonData.periodGranularity;
 
+    this.rawAggregators = null;
+    this.rawPostAggregators = null;
+
     function replaceTemplateValues(obj, attrList) {
       var substitutedVals = attrList.map(function (attr) {
         return templateSrv.replace(obj[attr]);
@@ -73,9 +76,16 @@ function (angular, _, dateMath, moment) {
       });
     };
 
-    this.getRawQuery = function (rawQuery, query) {
-      const jsonRawQuery = JSON.parse(rawQuery);
-      return this._druidQuery(jsonRawQuery);
+    this.getRawQuery = function (rawQuery, panelRange, query) {
+      try {
+        var jsonRawQuery = JSON.parse(rawQuery);
+      } catch (error) {
+        
+      }
+      if (jsonRawQuery) {
+        jsonRawQuery.intervals = getQueryIntervals(panelRange.from, panelRange.to);
+        return this._druidQuery(jsonRawQuery);
+      }
     }
 
     this.getFilterValues = function (target, panelRange, query) {
@@ -114,6 +124,14 @@ function (angular, _, dateMath, moment) {
         params: params,
       });
     };
+
+    this.setRawAggregators = function (rawAggregators, query) {
+      this.rawAggregators = rawAggregators
+    }
+
+    this.setRawPostAggregator = function (rawPostAggregators, query) {
+      this.rawPostAggregators = rawPostAggregators;
+    }
 
     // Called once per panel (graph)
     this.query = function(options) {
@@ -155,8 +173,22 @@ function (angular, _, dateMath, moment) {
       var datasource = target.druidDS;
       var filters = target.filters;
       var rawQuery = target.rawQuery;
-      var aggregators = target.aggregators;
-      var postAggregators = target.postAggregators;
+      var rawAggregators = null;
+      try {
+        rawAggregators = target.currentRawAggregator;
+        rawAggregators = JSON.parse(rawAggregators);
+      } catch (error) {
+        rawAggregators = null;
+      }
+      var aggregators = rawAggregators || target.aggregators;
+      var rawPostAggregators = null;
+      try {
+        rawPostAggregators = target.currentRawPostAggregator;
+        rawPostAggregators = JSON.parse(rawPostAggregators);
+      } catch (error) {
+        rawPostAggregators = null;
+      }
+      var postAggregators = rawPostAggregators || target.postAggregators;
       var groupBy = _.map(target.groupBy, (e) => { return templateSrv.replace(e) });
       var limitSpec = null;
       var metricNames = getMetricNames(aggregators, postAggregators);
@@ -309,10 +341,17 @@ function (angular, _, dateMath, moment) {
     }
 
     this._druidQuery = function (query) {
+      const tmpQuery = JSON.parse(JSON.stringify(query));
+      if (this.rawAggregators) {
+        tmpQuery.aggregations = this.rawAggregators;
+      }
+      if (this.rawPostAggregators) {
+        tmpQuery.postAggregations = this.rawPostAggregators;
+      }
       var options = {
         method: 'POST',
         url: this.url + '/druid/v2/',
-        data: query
+        data: tmpQuery
       };
       console.log("Make http request");
       console.log(options);
