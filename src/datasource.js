@@ -420,7 +420,11 @@ function (angular, _, dateMath, moment) {
     function buildFilterTree(filters) {
       //Do template variable replacement
       var replacedFilters = filters.map(function (filter) {
-        return filterTemplateExpanders[filter.type](filter);
+        if (filterTemplateExpanders.hasOwnProperty(filter.type)) {
+          return filterTemplateExpanders[filter.type](filter);
+        } else {
+          return filterTemplateExpanders['search'](filter);
+        }
       })
       .map(function (filter) {
         var finalFilter = _.omit(filter, 'negate');
