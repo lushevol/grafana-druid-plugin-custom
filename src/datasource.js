@@ -32,6 +32,7 @@ function (angular, _, dateMath, moment) {
     this.supportMetrics = true;
     this.periodGranularity = instanceSettings.jsonData.periodGranularity;
 
+    this.rawFilter = null;
     this.rawAggregators = null;
     this.rawPostAggregators = null;
 
@@ -201,7 +202,7 @@ function (angular, _, dateMath, moment) {
 
       var rawFilter = null;
       try {
-        rawFilter = target.currentRawAggregator;
+        rawFilter = target.currentRawFilter;
         rawFilter = JSON.parse(rawFilter);
       } catch (error) {
         rawFilter = null;
