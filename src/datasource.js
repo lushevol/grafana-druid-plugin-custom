@@ -207,7 +207,7 @@ function (angular, _, dateMath, moment) {
         rawFilter = null;
       }
       var filters = target.filters;
-      if (filters) {
+      if (filters && rawFilter) {
         filters = filters.concat(rawFilter);
       } else if (rawFilter) {
         filters = rawFilter;
@@ -221,7 +221,7 @@ function (angular, _, dateMath, moment) {
         rawAggregators = null;
       }
       var aggregators = target.aggregators;
-      if (aggregators) {
+      if (aggregators && rawAggregators) {
         aggregators = aggregators.concat(rawAggregators);
       } else if (rawAggregators) {
         aggregators = rawAggregators;
