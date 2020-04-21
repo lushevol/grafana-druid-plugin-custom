@@ -125,13 +125,32 @@ function (angular, _, dateMath, moment) {
       });
     };
 
-    this.setRawAggregators = function (rawAggregators, query) {
-      this.rawAggregators = rawAggregators
+    this.setRawFilter = function(rawFilter, query) {
+      try {
+        this.rawFilter = JSON.parse(rawFilter);
+      } catch (error) {
+        console.error("Filter 格式解析错误");
+        console.error(error);
+      }
     }
 
-    this.setRawPostAggregator = function (rawPostAggregators, query) {
-      this.rawPostAggregators = rawPostAggregators;
-    }
+    this.setRawAggregators = function(rawAggregators, query) {
+      try {
+        this.rawAggregators = JSON.parse(rawAggregators);
+      } catch (error) {
+        console.error("aggregations 格式解析错误");
+        console.error(error);
+      }
+    };
+
+    this.setRawPostAggregator = function(rawPostAggregators, query) {
+      try {
+        this.rawPostAggregators = JSON.parse(rawPostAggregators);
+      } catch (error) {
+        console.error("post agg 格式解析错误");
+        console.error(error);
+      }
+    };
 
     // Called once per panel (graph)
     this.query = function(options) {
@@ -143,7 +162,7 @@ function (angular, _, dateMath, moment) {
       console.log(options);
 
       var promises = options.targets.map(function (target) {
-        if (target.hide===true || _.isEmpty(target.druidDS) || (_.isEmpty(target.aggregators) && target.queryType !== "select")) {
+        if (target.hide===true || _.isEmpty(target.druidDS) || ((_.isEmpty(target.currentRawQuery) && _.isEmpty(target.currentRawAggregator) && _.isEmpty(target.aggregators)) && target.queryType !== "select")) {
           console.log("target.hide: " + target.hide + ", target.druidDS: " + target.druidDS + ", target.aggregators: " + target.aggregators);
           var d = $q.defer();
           d.resolve([]);
@@ -171,8 +190,29 @@ function (angular, _, dateMath, moment) {
 
     this._doQuery = function (from, to, granularity, target) {
       var datasource = target.druidDS;
+      
+      var rawQuery = null;
+      try {
+        rawQuery = target.currentRawQuery || target.rawQuery;
+        rawQuery = JSON.parse(rawQuery);
+      } catch (error) {
+        rawQuery = null;
+      }
+
+      var rawFilter = null;
+      try {
+        rawFilter = target.currentRawAggregator;
+        rawFilter = JSON.parse(rawFilter);
+      } catch (error) {
+        rawFilter = null;
+      }
       var filters = target.filters;
-      var rawQuery = target.rawQuery;
+      if (filters) {
+        filters = filters.concat(rawFilter);
+      } else if (rawFilter) {
+        filters = rawFilter;
+      }
+      
       var rawAggregators = null;
       try {
         rawAggregators = target.currentRawAggregator;
@@ -180,7 +220,13 @@ function (angular, _, dateMath, moment) {
       } catch (error) {
         rawAggregators = null;
       }
-      var aggregators = rawAggregators || target.aggregators;
+      var aggregators = target.aggregators;
+      if (aggregators) {
+        aggregators = aggregators.concat(rawAggregators);
+      } else if (rawAggregators) {
+        aggregators = rawAggregators;
+      }
+
       var rawPostAggregators = null;
       try {
         rawPostAggregators = target.currentRawPostAggregator;
@@ -189,6 +235,7 @@ function (angular, _, dateMath, moment) {
         rawPostAggregators = null;
       }
       var postAggregators = rawPostAggregators || target.postAggregators;
+
       var groupBy = _.map(target.groupBy, (e) => { return templateSrv.replace(e) });
       var limitSpec = null;
       var metricNames = getMetricNames(aggregators, postAggregators);
@@ -203,6 +250,7 @@ function (angular, _, dateMath, moment) {
       }
 
       if (rawQuery) {
+        rawQuery.intervals = intervals
         promise = this._rawQuery(rawQuery)
       } else if (target.queryType === 'topN') {
         var threshold = target.limit;
@@ -342,9 +390,9 @@ function (angular, _, dateMath, moment) {
 
     this._druidQuery = function (query) {
       const tmpQuery = JSON.parse(JSON.stringify(query));
-      if (this.rawAggregators) {
-        tmpQuery.aggregations = this.rawAggregators;
-      }
+      // if (this.rawAggregators) {
+      //   tmpQuery.aggregations = tmpQuery.aggregations.concat(this.rawAggregators);
+      // }
       if (this.rawPostAggregators) {
         tmpQuery.postAggregations = this.rawPostAggregators;
       }

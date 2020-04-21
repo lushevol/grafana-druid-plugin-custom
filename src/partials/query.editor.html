@@ -254,7 +254,8 @@
       </label>
     </div>
     <div class="gf-form gf-form--grow">
-      <div class="gf-form-label gf-form-label--grow"></div>
+      <!-- <div class="gf-form-label gf-form-label--grow"></div> -->
+      <input type="text" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawFilter" placeholder="(可选)输入内容代替Filter" ng-blur="ctrl.targetBlur()" bs-typeahead="ctrl.setRawFilter">
     </div>
   </div>
 
@@ -388,7 +389,7 @@
     </div>
     <div class="gf-form gf-form--grow">
       <!-- <div class="gf-form-label gf-form-label--grow"></div> -->
-      <input type="text" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawAggregator" placeholder="" ng-blur="ctrl.targetBlur()" bs-typeahead="ctrl.setRawAggregators">
+      <input type="text" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawAggregator" placeholder="(可选)输入内容代替Aggregations" ng-blur="ctrl.targetBlur()" bs-typeahead="ctrl.setRawAggregators">
     </div>
   </div>
   <div class="gf-form-inline">
@@ -450,7 +451,7 @@
   </div>
   <div class="gf-form gf-form--grow">
     <!-- <div class="gf-form-label gf-form-label--grow"></div> -->
-    <input type="text" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawPostAggregator" placeholder="" ng-blur="ctrl.targetBlur()" bs-typeahead="ctrl.setRawPostAggregator">
+    <input type="text" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawPostAggregator" placeholder="(可选)输入内容代替Post Aggs" ng-blur="ctrl.targetBlur()" bs-typeahead="ctrl.setRawPostAggregator">
   </div>
 </div>
 <!-- raw query -->
@@ -467,7 +468,7 @@
       </label>
     </div>
     <div class="gf-form gf-form--grow" ng-show="ctrl.addRawQueryMode">
-      <textarea rows="4" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" ng-change="ctrl.getRawQuery" placeholder="input raw query" ng-blur="ctrl.targetBlur()">
+      <textarea rows="4" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentRawQuery" ng-change="ctrl.getRawQuery" placeholder="(可选)输入完整请求报文" ng-blur="ctrl.targetBlur()">
     </div>
 
     <div class="gf-form" ng-show="ctrl.addRawQueryMode">

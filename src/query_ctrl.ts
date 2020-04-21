@@ -19,6 +19,7 @@ export class DruidQueryCtrl extends QueryCtrl {
   getDimensions: any;
   getFilterValues: any;
   getRawQuery: any;
+  setRawFilter: any;
   setRawAggregators: any;
   setRawPostAggregator: any;
   queryTypes: any;
@@ -144,16 +145,19 @@ export class DruidQueryCtrl extends QueryCtrl {
         .then(callback);
     };
 
+    this.setRawFilter = (query, callback) => {
+      var rawFilter = this.target.currentRawFilter;
+      this.datasource.setRawFilter(rawFilter, query);
+    };
+
     this.setRawAggregators = (query, callback) => {
       var rawAggregators = this.target.currentRawAggregator;
-      this.datasource.setRawAggregators(rawAggregators, query)
-        .then(callback);
+      this.datasource.setRawAggregators(rawAggregators, query);
     };
     
     this.setRawPostAggregator = (query, callback) => {
       var rawPostAggregators = this.target.currentRawPostAggregator;
-      this.datasource.setRawPostAggregator(rawPostAggregators, query)
-        .then(callback);
+      this.datasource.setRawPostAggregator(rawPostAggregators, query);
     };
 
     this.getFilterValues = (query, callback) => {
