@@ -6,7 +6,7 @@
   "metrics": true,
 
   "info": {
-    "version": "0.0.7",
+    "version": "0.0.8",
     "author": {
       "name": "lushuai",
       "url": "https://github.com/grafana-druid-plugin/druidplugin"

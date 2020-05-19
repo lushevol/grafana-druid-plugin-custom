@@ -89,6 +89,10 @@ function (angular, _, dateMath, moment) {
       }
     }
 
+    this.getLucaSQL = function (sql, query) {
+      return this._druidSQLQuery(sql);
+    }
+
     this.getFilterValues = function (target, panelRange, query) {
         var topNquery = {
             "queryType": "topN",
@@ -163,7 +167,7 @@ function (angular, _, dateMath, moment) {
       console.log(options);
 
       var promises = options.targets.map(function (target) {
-        if (target.hide===true || _.isEmpty(target.druidDS) || ((_.isEmpty(target.currentRawQuery) && _.isEmpty(target.currentRawAggregator) && _.isEmpty(target.aggregators)) && target.queryType !== "select")) {
+        if (target.hide===true || _.isEmpty(target.druidDS) || ((_.isEmpty(target.currentLucaSQL) && _.isEmpty(target.currentRawQuery) && _.isEmpty(target.currentRawAggregator) && _.isEmpty(target.aggregators)) && target.queryType !== "select")) {
           console.log("target.hide: " + target.hide + ", target.druidDS: " + target.druidDS + ", target.aggregators: " + target.aggregators);
           var d = $q.defer();
           d.resolve([]);
@@ -199,6 +203,9 @@ function (angular, _, dateMath, moment) {
       } catch (error) {
         rawQuery = null;
       }
+
+      var lucaSQL = null;
+      lucaSQL = target.currentLucaSQL;
 
       var rawFilter = null;
       try {
@@ -250,7 +257,9 @@ function (angular, _, dateMath, moment) {
         selectThreshold = 5;
       }
 
-      if (rawQuery) {
+      if (lucaSQL) {
+        promise = this._sqlQuery(lucaSQL)
+      } else if (rawQuery) {
         rawQuery.intervals = intervals
         promise = this._rawQuery(rawQuery)
       } else if (target.queryType === 'topN') {
@@ -389,6 +398,10 @@ function (angular, _, dateMath, moment) {
       return this._druidQuery(query);
     }
 
+    this._sqlQuery = function (sql) {
+      return this._druidSQLQuery(sql);
+    }
+
     this._druidQuery = function (query) {
       const tmpQuery = JSON.parse(JSON.stringify(query));
       // if (this.rawAggregators) {
@@ -404,6 +417,19 @@ function (angular, _, dateMath, moment) {
       };
       console.log("Make http request");
       console.log(options);
+      return backendSrv.datasourceRequest(options);
+    };
+
+    this._druidSQLQuery = function (sql) {
+      var options = {
+        method: 'POST',
+        url: this.url + '/druid/v2/sql',
+        data: {
+          query: sql,
+          resultFormat: 'object',
+          header: true
+        }
+      };
       return backendSrv.datasourceRequest(options);
     };
 

@@ -477,4 +477,27 @@
       </label>
     </div>
   </div>
+  <!-- raw SQL -->
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <label class="gf-form-label query-keyword width-9">
+        SQL
+      </label>
+    </div>
+
+    <div class="gf-form" ng-hide="ctrl.addLucaSQLMode">
+      <label class="gf-form-label query-keyword">
+        <a ng-click="ctrl.addLucaSQL()"><i class="fa fa-plus"></i></a>
+      </label>
+    </div>
+    <div class="gf-form gf-form--grow" ng-show="ctrl.addLucaSQLMode">
+      <textarea rows="4" class="gf-form-input" spellcheck="false" ng-model="ctrl.target.currentLucaSQL" ng-change="ctrl.getLucaSQL" placeholder="(可选)输入SQL" ng-blur="ctrl.targetBlur()">
+    </div>
+
+    <div class="gf-form" ng-show="ctrl.addLucaSQLMode">
+      <label class="gf-form-label">
+        <a ng-click="ctrl.clearCurrentLucaSQL()"><i class="fa fa-remove"></i></a>
+      </label>
+    </div>
+  </div>
 </query-editor-row>

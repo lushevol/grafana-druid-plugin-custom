@@ -11,6 +11,7 @@ export class DruidQueryCtrl extends QueryCtrl {
   addAggregatorMode: boolean;
   addPostAggregatorMode: boolean;
   addRawQueryMode: boolean;
+  addLucaSQLMode: boolean;
   addDimensionsMode: boolean;
   addMetricsMode: boolean;
   listDataSources: any;
@@ -19,6 +20,7 @@ export class DruidQueryCtrl extends QueryCtrl {
   getDimensions: any;
   getFilterValues: any;
   getRawQuery: any;
+  getLucaSQL: any;
   setRawFilter: any;
   setRawAggregators: any;
   setRawPostAggregator: any;
@@ -57,6 +59,7 @@ export class DruidQueryCtrl extends QueryCtrl {
 
     arithmeticPostAggregatorFns = {'+': null, '-': null, '*': null, '/': null};
     defaultRawQuery = "";
+    defaultLucaSQL = '';
     defaultQueryType = "timeseries";
     defaultFilterType = "selector";
     defaultAggregatorType = "count";
@@ -142,6 +145,12 @@ export class DruidQueryCtrl extends QueryCtrl {
     this.getRawQuery = (query, callback) => {
       const rawQuery = this.target.currentRawQuery;
       this.datasource.getRawQuery(rawQuery, this.panelCtrl.range, query)
+        .then(callback);
+    };
+
+    this.getLucaSQL = (query, callback) => {
+      const lucaSQL = this.target.currentLucaSQL;
+      this.datasource.getLucaSQL(lucaSQL, query)
         .then(callback);
     };
 
@@ -389,6 +398,38 @@ export class DruidQueryCtrl extends QueryCtrl {
     clearCurrentRawQuery() {
       this.target.currentRawQuery = '';
       this.addRawQueryMode = false;
+      this.targetBlur();
+    }
+    
+    addLucaSQL() {
+      if (!this.addLucaSQLMode) {
+        this.addLucaSQLMode = true;
+        return;
+      }
+
+      if (!this.target.lucaSQL) {
+        this.target.lucaSQL = '';
+      }
+
+      this.target.errors = this.validateTarget();
+      if (!this.target.errors.currentLucaSQL) {
+        //Add new post aggregator to the list
+        this.target.lucaSQL = this.target.currentLucaSQL;
+        this.clearCurrentLucaSQL();
+        this.addLucaSQLMode = false;
+      }
+
+      this.targetBlur();
+    }
+
+    removeLucaSQL(index) {
+      this.target.lucaSQL = '';
+      this.targetBlur();
+    }
+
+    clearCurrentLucaSQL() {
+      this.target.currentLucaSQL = '';
+      this.addLucaSQLMode = false;
       this.targetBlur();
     }
 
